@@ -12,10 +12,16 @@ class Bandit :
     return 1
 
 arms_num = 10
+ns = np.zeros((arms_num))
+qs = np.zeros((arms_num))
+
+play_times = 10
 bandit = Bandit(arms_num)
-avg = 0
-for i in range(arms_num) :
-  arm = np.random.randint(10)
+for i in range(play_times) :
+  arm = np.random.randint(arms_num)
   reward = bandit.play(arm)
-  avg = avg + (reward - avg) * (1 / (i + 1))
-print(avg)
+
+  ns[arm] += 1
+  qs[arm] = qs[arm] + (reward - qs[arm]) / (ns[arm] + 1)
+print(ns)
+print(qs)
