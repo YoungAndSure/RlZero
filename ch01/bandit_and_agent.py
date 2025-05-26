@@ -1,5 +1,7 @@
 #! python
 import numpy as np
+import matplotlib.pyplot as plt
+plt.ion()
 
 class Bandit :
   def __init__(self, action_num) :
@@ -41,9 +43,20 @@ epsilon = 0.1
 bandit = Bandit(action_num)
 agent = Agent(epsilon)
 
+total_reward = 0.0
+total_rewards = []
+rates = []
 for i in range(play_times) :
   action = agent.get_action()
   reward = bandit.play(action)
   agent.update(action, reward)
-print(agent.get_rewards())
-print(bandit.get_rates())
+
+  total_reward += reward
+  total_rewards.append(total_reward)
+  rates.append(total_reward / (i + 1))
+
+plt.xlabel('Steps')
+plt.ylabel('TotalRewards')
+plt.plot(total_rewards)
+plt.pause(5)
+plt.show()
