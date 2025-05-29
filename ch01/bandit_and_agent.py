@@ -1,11 +1,10 @@
 #! python3
 import numpy as np
 import matplotlib.pyplot as plt
-plt.ion()
 
 class Bandit :
-  def __init__(self, action_num) :
-    np.random.seed(0)
+  def __init__(self, action_num, seed=0) :
+    np.random.seed(seed)
     self.rates = np.random.rand(action_num)
 
   def play(self, action) :
@@ -40,20 +39,26 @@ play_times = 1000
 # action_num意为有多少种action
 action_num = 10
 epsilon = 0.1
-bandit = Bandit(action_num)
-agent = Agent(epsilon)
+run_times = 200
+all_rates = np.zeros((run_times, play_times))
 
-total_reward = 0.0
-total_rewards = []
-rates = []
-for i in range(play_times) :
-  action = agent.get_action()
-  reward = bandit.play(action)
-  agent.update(action, reward)
+for run in range(run_times) :
+  bandit = Bandit(action_num, seed=run)
+  agent = Agent(epsilon)
 
-  total_reward += reward
-  total_rewards.append(total_reward)
-  rates.append(total_reward / (i + 1))
+  total_reward = 0.0
+  total_rewards = np.zeros(play_times)
+  rates = np.zeros(play_times)
+  for i in range(play_times) :
+    action = agent.get_action()
+    reward = bandit.play(action)
+    agent.update(action, reward)
+
+    total_reward += reward
+    total_rewards[i] = total_reward
+    rates[i] = (total_reward / (i + 1))
+  all_rates[run] = rates
+avg_rates = np.average(all_rates, axis=0)
 
 plt.xlabel('Steps')
 plt.ylabel('TotalRewards')
@@ -61,5 +66,13 @@ plt.plot(total_rewards)
 plt.savefig("play1000_rewards")
 
 plt.clf()
+plt.xlabel('Steps')
+plt.ylabel('Rates')
 plt.plot(rates)
 plt.savefig("play1000_rates")
+
+plt.clf()
+plt.xlabel('Steps')
+plt.ylabel('AvgRates')
+plt.plot(avg_rates)
+plt.savefig("run200play1000_avg_rates")
