@@ -34,45 +34,43 @@ class Agent :
   def get_rewards(self) :
     return self.ns, self.qs
 
+def play(play_times, action_num, epsilon, run_times, plt1, plt2, plt3) :
+  all_rates = np.zeros((run_times, play_times))
+  for run in range(run_times) :
+    bandit = Bandit(action_num, seed=run)
+    agent = Agent(epsilon)
 
-play_times = 1000
-# action_num意为有多少种action
-action_num = 10
-epsilon = 0.1
-run_times = 200
-all_rates = np.zeros((run_times, play_times))
+    total_reward = 0.0
+    total_rewards = np.zeros(play_times)
+    rates = np.zeros(play_times)
+    for i in range(play_times) :
+      action = agent.get_action()
+      reward = bandit.play(action)
+      agent.update(action, reward)
 
-for run in range(run_times) :
-  bandit = Bandit(action_num, seed=run)
-  agent = Agent(epsilon)
+      total_reward += reward
+      total_rewards[i] = total_reward
+      rates[i] = (total_reward / (i + 1))
+    all_rates[run] = rates
+  avg_rates = np.average(all_rates, axis=0)
 
-  total_reward = 0.0
-  total_rewards = np.zeros(play_times)
-  rates = np.zeros(play_times)
-  for i in range(play_times) :
-    action = agent.get_action()
-    reward = bandit.play(action)
-    agent.update(action, reward)
+  plt1.set_title('epsilon:{}'.format(epsilon))
+  plt1.set_xlabel('Steps')
+  plt1.set_ylabel('TotalRewards')
+  plt1.plot(total_rewards)
 
-    total_reward += reward
-    total_rewards[i] = total_reward
-    rates[i] = (total_reward / (i + 1))
-  all_rates[run] = rates
-avg_rates = np.average(all_rates, axis=0)
+  plt2.set_title('epsilon:{}'.format(epsilon))
+  plt2.set_xlabel('Steps')
+  plt2.set_ylabel('Rates')
+  plt2.plot(rates)
 
-plt.xlabel('Steps')
-plt.ylabel('TotalRewards')
-plt.plot(total_rewards)
-plt.savefig("play1000_rewards")
+  plt3.set_xlabel('Steps')
+  plt3.set_ylabel('AvgRates')
+  plt3.plot(avg_rates, label="epsilon:{}".format(epsilon))
+  plt3.legend(loc='lower right')
 
-plt.clf()
-plt.xlabel('Steps')
-plt.ylabel('Rates')
-plt.plot(rates)
-plt.savefig("play1000_rates")
-
-plt.clf()
-plt.xlabel('Steps')
-plt.ylabel('AvgRates')
-plt.plot(avg_rates)
-plt.savefig("run200play1000_avg_rates")
+fig, axes = plt.subplots(4, 2, figsize=(20, 20)) 
+play(1000, 10, 0.1, 200, axes[0, 0], axes[0, 1], axes[3,0])
+play(1000, 10, 0.3, 200, axes[1, 0], axes[1, 1], axes[3, 0])
+play(1000, 10, 0.01, 200, axes[2, 0], axes[2, 1], axes[3, 0])
+plt.savefig("one")
