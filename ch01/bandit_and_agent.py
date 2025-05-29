@@ -1,4 +1,4 @@
-#! python
+#! python3
 import numpy as np
 import matplotlib.pyplot as plt
 plt.ion()
@@ -36,7 +36,7 @@ class Agent :
     return self.ns, self.qs
 
 
-play_times = 10
+play_times = 1000
 # action_num意为有多少种action
 action_num = 10
 epsilon = 0.1
@@ -58,5 +58,8 @@ for i in range(play_times) :
 plt.xlabel('Steps')
 plt.ylabel('TotalRewards')
 plt.plot(total_rewards)
-plt.pause(5)
-plt.show()
+plt.savefig("play1000_rewards")
+
+plt.clf()
+plt.plot(rates)
+plt.savefig("play1000_rates")
