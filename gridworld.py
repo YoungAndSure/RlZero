@@ -1,5 +1,6 @@
 
 import numpy as np
+from gridworld_render import Renderer
 
 class GridWorld :
   def __init__(self) :
@@ -42,7 +43,7 @@ class GridWorld :
 
   def next_state(self, state, action) :
     move = self.action_move[action]
-    next_state = [state[0] + move[0], state[1] + move[1]]
+    next_state = (state[0] + move[0], state[1] + move[1])
     ns1, ns2 = next_state[0], next_state[1]
 
     if ns1 < 0 or ns1 >= self.high or ns2 < 0 or ns2 >= self.width or next_state == self.wall_state:
@@ -53,9 +54,15 @@ class GridWorld :
   def reward(self, state, action, next_state) :
     return self.reward_map[next_state]
 
-  def render_v(self, V=None, S=None) :
-    # V 状态价值,S策略
-    pass
+  def render_v(self, file_name, v=None, policy=None, print_value=True):
+      renderer = Renderer(self.reward_map, self.goal_state,
+                                        self.wall_state)
+      renderer.render_v(file_name, v, policy, print_value)
+
+  def render_q(self, file_name, q=None, print_value=True):
+      renderer = Renderer(self.reward_map, self.goal_state,
+                                        self.wall_state)
+      renderer.render_q(file_name, q, print_value)
 
   def reset(self) :
     self.agent_state = self.start_state
