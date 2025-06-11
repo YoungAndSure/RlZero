@@ -36,13 +36,3 @@ def policy_evaluate(pi, V, env, gamma, threshold=0.001) :
       print("max step:{}".format(i))
       break
   return V
- 
-# key是状态，value是此状态下策略
-pi = defaultdict(lambda : {0:0.25, 1:0.25, 2:0.25, 3:0.25})
-# key是状态，value是此状态下的价值
-V = defaultdict(lambda : 0)
-gamma = 0.9
-env = GridWorld()
-
-V = policy_evaluate(pi, V, env, gamma)
-env.render_v("test.png", V, pi)
