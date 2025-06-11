@@ -33,12 +33,8 @@ class FunctionTest(unittest.TestCase) :
   def test_policy_iter(self) :
     gamma = 0.9
     env = GridWorld()
-    V = defaultdict(lambda : 0.0)
-    pi = defaultdict(lambda : {0:0.25, 1:0.25, 2:0.25, 3:0.25})
 
-    V = policy_evaluate(pi, V, env, gamma)
-    pi = greedy_policy(env, V, pi, gamma)
+    policy_iter(env, gamma, True)
 
-    env.render_v("test_policy_iter.png", V, pi)
 
 unittest.main()

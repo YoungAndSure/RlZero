@@ -33,6 +33,5 @@ def policy_evaluate(pi, V, env, gamma, threshold=0.001) :
         max_delta = delta
     
     if max_delta < threshold :
-      print("max step:{}".format(i))
       break
   return V

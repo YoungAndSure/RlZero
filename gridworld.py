@@ -6,7 +6,8 @@ class GridWorld :
   def __init__(self) :
     self.action_space = [0,1,2,3]
     self.action_meaning = ['UP','DOWN','LEFT','RIGHT']
-    self.action_move = [[1, 0], [-1, 0], [0, -1], [0, 1]]
+    # fix, UP DOWN写反了，排查半天
+    self.action_move = [(-1, 0), (1, 0), (0, -1), (0, 1)]
 
     self.reward_map = np.array(
       [[0,0,0,1.0],
