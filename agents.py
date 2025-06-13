@@ -67,10 +67,10 @@ class McAgent() :
     # Q 与 V不同，V的key是state, value是状态价值
     # Q的key是(state, action)，value是行动价值，或者说“此状态下的行动价值”
     self.Q = defaultdict(lambda : 0)
-    self.cnts = defaultdict(lambda : 0)
     self.memory = []
 
-    self.epsilon = 0.0
+    self.epsilon = 0.1
+    self.alpha = 0.1
 
   def get_action(self, state) :
     actions_prob = self.pi[state]
@@ -92,7 +92,6 @@ class McAgent() :
       state, action, reward = memory
       G = self.gamma * G + reward
       key = (state, action)
-      self.cnts[key] += 1
-      self.Q[key] += (G - self.Q[key]) / self.cnts[key]
+      self.Q[key] += (G - self.Q[key]) * self.alpha
 
-      self.pi[state] = greedy_prob(self.Q, state, self.epsilon self.action_space)
+      self.pi[state] = greedy_prob(self.Q, state, self.epsilon, self.action_space)

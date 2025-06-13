@@ -47,7 +47,10 @@ class FunctionTest(unittest.TestCase) :
     pi = greedy_policy(env, V, gamma)
     env.render_v("test_value_iter.png", V, pi)
 
-  def test_mc_eval(self) :
-    mc_evaluate()
+  def test_mc_evaluate_v(self) :
+    mc_evaluate_v()
+
+  def test_mc_evaluate_q(self) :
+    mc_evaluate_q()
 
 unittest.main()
