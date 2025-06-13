@@ -19,6 +19,8 @@ class Renderer:
         self.fig = None
         self.first_flg = True
 
+        self.base_dir = "png/"
+
     def set_figure(self, figsize=None):
         fig = plt.figure(figsize=figsize)
         self.ax = fig.add_subplot(111)
@@ -89,7 +91,7 @@ class Renderer:
 
                 if state == self.wall_state:
                     ax.add_patch(plt.Rectangle((x,ys-y-1), 1, 1, fc=(0.4, 0.4, 0.4, 1.)))
-        plt.savefig(file_name, dpi=300)
+        plt.savefig(self.base_dir + file_name, dpi=300)
 
     def render_q(self, file_name, q, show_greedy_policy=True):
         self.set_figure()
@@ -151,7 +153,7 @@ class Renderer:
 
                         offset= offset_map[action]
                         ax.text(tx+offset[0], ty+offset[1], "{:12.2f}".format(tq))
-        plt.savefig(file_name, dpi=300)
+        plt.savefig(self.base_dir + file_name, dpi=300)
 
         if show_greedy_policy:
             policy = {}
