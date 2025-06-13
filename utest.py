@@ -12,6 +12,7 @@ from gridworld import *
 from policy_eval import *
 from policy_iter import *
 from value_iter import *
+from mc_eval import *
 
 class FunctionTest(unittest.TestCase) :
   def test_property(self) :
@@ -45,5 +46,8 @@ class FunctionTest(unittest.TestCase) :
 
     pi = greedy_policy(env, V, gamma)
     env.render_v("test_value_iter.png", V, pi)
+
+  def test_mc_eval(self) :
+    mc_evaluate()
 
 unittest.main()

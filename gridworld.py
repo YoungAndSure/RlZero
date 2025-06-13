@@ -67,6 +67,11 @@ class GridWorld :
 
   def reset(self) :
     self.agent_state = self.start_state
+    return self.agent_state
 
   def step(self, action) :
-    pass
+    next_state = self.next_state(self.agent_state, action)
+    reward = self.reward(self.agent_state, action, next_state)
+    done = True if next_state == self.goal_state else False
+    self.agent_state = next_state
+    return next_state, reward, done

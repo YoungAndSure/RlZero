@@ -5,15 +5,7 @@ from policy_eval import policy_evaluate
 
 import numpy as np
 from collections import defaultdict 
-
-def argmax(kv) :
-  max_arg = None
-  max_value = None
-  for (k, v) in kv.items() :
-    if max_arg is None or max_value is None or v > max_value:
-      max_arg = k
-      max_value = v
-  return max_arg
+from utils import argmax
 
 # pi是通过当前的V找到的最优策略，和前边的V前边的pi都没有关系，所以这里不要传入之前的pi
 def greedy_policy(env, V, gamma) :
