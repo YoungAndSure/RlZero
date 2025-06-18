@@ -95,3 +95,26 @@ class McAgent() :
       self.Q[key] += (G - self.Q[key]) * self.alpha
 
       self.pi[state] = greedy_prob(self.Q, state, self.epsilon, self.action_space)
+
+class TdAgent :
+  def __init__(self) :
+    self.gamma = 0.9
+    self.action_size = 4
+
+    random_actions = {0:0.25, 1:0.25, 2:0.25, 3:0.25}
+    self.pi = defaultdict(lambda : random_actions)
+    self.V = defaultdict(lambda : 0)
+
+    self.alpha = 0.1
+
+  def get_action(self, state) :
+    actions_prob = self.pi[state]
+    actions = list(actions_prob.keys())
+    probs = list(actions_prob.values())
+    action = np.random.choice(actions, p=probs)
+    return action
+
+  def eval(self, state, reward, next_state, done) :
+    next_V = 0 if done else self.V[next_state]
+    G = reward + self.gamma * next_V
+    self.V[state] += (G - self.V[state]) * self.alpha

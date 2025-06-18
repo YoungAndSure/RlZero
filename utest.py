@@ -13,6 +13,7 @@ from policy_eval import *
 from policy_iter import *
 from value_iter import *
 from mc_eval import *
+from td_eval import *
 
 class FunctionTest(unittest.TestCase) :
   def test_property(self) :
@@ -52,5 +53,8 @@ class FunctionTest(unittest.TestCase) :
 
   def test_mc_evaluate_q(self) :
     mc_evaluate_q()
+
+  def test_td_evaluate(self) :
+    td_evaluate_v()
 
 unittest.main()
