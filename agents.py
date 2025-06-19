@@ -1,5 +1,6 @@
 
 from collections import defaultdict 
+from collections import deque
 import numpy as np
 from utils import argmax
 
@@ -118,3 +119,42 @@ class TdAgent :
     next_V = 0 if done else self.V[next_state]
     G = reward + self.gamma * next_V
     self.V[state] += (G - self.V[state]) * self.alpha
+
+class SarsaAgent :
+  def __init__(self) :
+    self.gamma = 0.9
+    self.action_size = 4
+    self.action_space = [0, 1, 2, 3]
+
+    random_actions = {0:0.25, 1:0.25, 2:0.25, 3:0.25}
+    self.pi = defaultdict(lambda : random_actions)
+    self.Q = defaultdict(lambda : 0)
+
+    self.alpha = 0.8
+    self.epsilon = 0.1
+    self.memory = deque(maxlen=2)
+
+  def get_action(self, state) :
+    actions_prob = self.pi[state]
+    actions = list(actions_prob.keys())
+    probs = list(actions_prob.values())
+    action = np.random.choice(actions, p=probs)
+    return action
+
+  def reset(self) :
+    self.memory.clear()
+
+  def update(self, state, action, reward, done) :
+    self.memory.append((state, action, reward, done))
+    if len(self.memory) < 2 :
+      return
+    
+    state, action, reward, done = self.memory[0]
+    next_state, next_action, _, _ = self.memory[1]
+
+    key = (state, action)
+    next_q = 0 if done else self.Q[next_state, next_action]
+    target = reward + next_q * self.gamma
+    self.Q[key] += (target - self.Q[key]) * self.alpha
+
+    self.pi[action] = greedy_prob(self.Q, state, self.epsilon, self.action_space)

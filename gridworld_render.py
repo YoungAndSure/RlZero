@@ -165,4 +165,4 @@ class Renderer:
                     probs = {0:0.0, 1:0.0, 2:0.0, 3:0.0}
                     probs[max_action] = 1
                     policy[state] = probs
-            self.render_v(file_name, None, policy)
+            self.render_v("policy_" + file_name, None, policy)
