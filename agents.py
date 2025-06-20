@@ -127,6 +127,7 @@ class SarsaAgent :
     self.action_space = [0, 1, 2, 3]
 
     random_actions = {0:0.25, 1:0.25, 2:0.25, 3:0.25}
+    # 每个state都有一个！！！！
     self.pi = defaultdict(lambda : random_actions)
     self.Q = defaultdict(lambda : 0)
 
@@ -157,4 +158,50 @@ class SarsaAgent :
     target = reward + next_q * self.gamma
     self.Q[key] += (target - self.Q[key]) * self.alpha
 
-    self.pi[action] = greedy_prob(self.Q, state, self.epsilon, self.action_space)
+    self.pi[state] = greedy_prob(self.Q, state, self.epsilon, self.action_space)
+
+class SarsaOffPolicyAgent :
+  def __init__(self) :
+    self.gamma = 0.9
+    self.action_size = 4
+    self.action_space = [0, 1, 2, 3]
+
+    random_actions = {0:0.25, 1:0.25, 2:0.25, 3:0.25}
+    self.pi = defaultdict(lambda : random_actions)
+    self.b = defaultdict(lambda : random_actions)
+    self.Q = defaultdict(lambda : 0)
+
+    self.alpha = 0.8
+    self.epsilon = 0.1
+    self.memory = deque(maxlen=2)
+
+  def get_action(self, state) :
+    actions_prob = self.b[state]
+    actions = list(actions_prob.keys())
+    probs = list(actions_prob.values())
+    action = np.random.choice(actions, p=probs)
+    return action
+
+  def reset(self) :
+    self.memory.clear()
+
+  def update(self, state, action, reward, done) :
+    self.memory.append((state, action, reward, done))
+    if len(self.memory) < 2 :
+      return
+    
+    state, action, reward, done = self.memory[0]
+    next_state, next_action, _, _ = self.memory[1]
+
+    next_q = 0 if done else self.Q[next_state, next_action]
+    rho = 1 if done else self.pi[next_state][next_action] / self.b[next_state][next_action]
+
+    key = (state, action)
+    target = (reward + next_q * self.gamma) * rho
+    self.Q[key] += (target - self.Q[key]) * self.alpha
+
+    # 行动策略用epsilon策略更新，目标策略用贪婪策略更新
+    # 目标策略是最优策略，agent在过程中不会用到的，agent只会用到行动策略
+    # 强化学习最终是生成了这个目标策略
+    self.pi[state] = greedy_prob(self.Q, state, 0, self.action_space)
+    self.b[state] = greedy_prob(self.Q, state, self.epsilon, self.action_space)

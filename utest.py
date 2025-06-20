@@ -61,4 +61,7 @@ class FunctionTest(unittest.TestCase) :
   def test_sarsa_evaluate(self) :
     sarsa_evaluate_q()
 
+  def test_sarsa_offpolicy_evaluate(self) :
+    sarsa_offpolicy_evaluate_q()
+
 unittest.main()
