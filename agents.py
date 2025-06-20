@@ -230,8 +230,8 @@ class QLearningAgent :
   def update(self, state, action, reward, next_state, done) :
 
     action_value = []
-    for action in self.action_space :
-      action_value.append(self.Q[next_state, action])
+    for a in self.action_space :
+      action_value.append(self.Q[next_state, a])
     max_value = max(action_value)
 
     next_q = 0 if done else max_value
