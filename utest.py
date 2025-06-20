@@ -15,6 +15,7 @@ from value_iter import *
 from mc_eval import *
 from td_eval import *
 from sarsa_eval import *
+from q_learning_eval import *
 
 class FunctionTest(unittest.TestCase) :
   def test_property(self) :
@@ -63,5 +64,8 @@ class FunctionTest(unittest.TestCase) :
 
   def test_sarsa_offpolicy_evaluate(self) :
     sarsa_offpolicy_evaluate_q()
+
+  def test_q_learning_evaluate(self) :
+    q_learning_evaluate_q()
 
 unittest.main()

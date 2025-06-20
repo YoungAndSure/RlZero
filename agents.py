@@ -205,3 +205,40 @@ class SarsaOffPolicyAgent :
     # 强化学习最终是生成了这个目标策略
     self.pi[state] = greedy_prob(self.Q, state, 0, self.action_space)
     self.b[state] = greedy_prob(self.Q, state, self.epsilon, self.action_space)
+
+class QLearningAgent :
+  def __init__(self) :
+    self.gamma = 0.9
+    self.action_size = 4
+    self.action_space = [0, 1, 2, 3]
+
+    random_actions = {0:0.25, 1:0.25, 2:0.25, 3:0.25}
+    self.pi = defaultdict(lambda : random_actions)
+    self.b = defaultdict(lambda : random_actions)
+    self.Q = defaultdict(lambda : 0)
+
+    self.alpha = 0.8
+    self.epsilon = 0.1
+
+  def get_action(self, state) :
+    actions_prob = self.b[state]
+    actions = list(actions_prob.keys())
+    probs = list(actions_prob.values())
+    action = np.random.choice(actions, p=probs)
+    return action
+
+  def update(self, state, action, reward, next_state, done) :
+
+    action_value = []
+    for action in self.action_space :
+      action_value.append(self.Q[next_state, action])
+    max_value = max(action_value)
+
+    next_q = 0 if done else max_value
+
+    key = (state, action)
+    target = reward + next_q * self.gamma
+    self.Q[key] += (target - self.Q[key]) * self.alpha
+
+    self.pi[state] = greedy_prob(self.Q, state, 0, self.action_space)
+    self.b[state] = greedy_prob(self.Q, state, self.epsilon, self.action_space)
