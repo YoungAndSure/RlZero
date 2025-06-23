@@ -68,4 +68,7 @@ class FunctionTest(unittest.TestCase) :
   def test_q_learning_evaluate(self) :
     q_learning_evaluate_q()
 
+  def test_q_learning_sample_evaluate(self) :
+    q_learning_sample_evaluate_q()
+
 unittest.main()

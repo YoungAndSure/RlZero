@@ -242,3 +242,37 @@ class QLearningAgent :
 
     self.pi[state] = greedy_prob(self.Q, state, 0, self.action_space)
     self.b[state] = greedy_prob(self.Q, state, self.epsilon, self.action_space)
+
+class QLearningSampleAgent :
+  def __init__(self) :
+    self.gamma = 0.9
+    self.action_size = 4
+    self.action_space = [0, 1, 2, 3]
+
+    self.Q = defaultdict(lambda : 0)
+
+    self.alpha = 0.8
+    # epsilon含义：留多少探索
+    self.epsilon = 0.1
+
+  def get_action(self, state) :
+    if np.random.rand() < self.epsilon :
+      action = np.random.choice(self.action_space)
+    else :
+      action_value = {}
+      for a in self.action_space :
+        action_value[a] = self.Q[state, a]
+      action = argmax(action_value)
+    return action
+
+  def update(self, state, action, reward, next_state, done) :
+    action_value = []
+    for a in self.action_space :
+      action_value.append(self.Q[next_state, a])
+    max_value = max(action_value)
+
+    next_q = 0 if done else max_value
+
+    key = (state, action)
+    target = reward + next_q * self.gamma
+    self.Q[key] += (target - self.Q[key]) * self.alpha

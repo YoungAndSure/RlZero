@@ -19,3 +19,19 @@ def q_learning_evaluate_q() :
         break
       state = next_state
   env.render_q("test_q_learning_evaluate_q.png", agent.Q)
+
+def q_learning_sample_evaluate_q() :
+  env = GridWorld()
+  agent = QLearningSampleAgent()
+
+  for i in range(10000) :
+    state = env.reset()
+
+    while True :
+      action = agent.get_action(state)
+      next_state, reward, done = env.step(action)
+      agent.update(state, action, reward, next_state, done)
+      if done :
+        break
+      state = next_state
+  env.render_q("test_q_learning_sample_evaluate_q.png", agent.Q)
