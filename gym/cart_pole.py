@@ -3,25 +3,38 @@
 import gym
 import numpy as np
 from PIL import Image
+from replay_buffer import ReplayBuffer
 if not hasattr(np, 'bool8'):
     np.bool8 = np.bool_
 
+rb = ReplayBuffer(batch_size=32, buffer_size=10000)
+
 env = gym.make('CartPole-v0', render_mode="rgb_array")
-state = env.reset()
-print(state)
 
-action_space = env.action_space
-print(type(action_space))
+for i in range(100) :
+  state, info = env.reset()
+  done = False
+  frames = []
 
-done = False
-frames = []
-while not done :
-  frame = env.render()
-  img = Image.fromarray(frame)
-  frames.append(img)
-  action = np.random.choice([0, 1])
-  next_state, reward, done, truncated, info = env.step(action)
-env.close()
+  while not done :
+    frame = env.render()
+    img = Image.fromarray(frame)
+    frames.append(img)
+
+    action = np.random.choice([0, 1])
+    next_state, reward, done, truncated, info = env.step(action)
+    rb.add(state, action, reward, next_state, done)
+    state = next_state
+  env.close()
+
+print("len:{}".format(len(rb)))
+
+states, actions, rewards, next_states, dones = rb.get_batch()
+print(states.shape)
+print(actions.shape)
+print(rewards.shape)
+print(next_states.shape)
+print(dones.shape)
 
 frames[0].save(
     "cartpole.gif", 
