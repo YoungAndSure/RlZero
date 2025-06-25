@@ -26,13 +26,13 @@ class DQNAgent :
 
     self.action_size = 2
 
-    self.buffer_size = 10000
+    self.buffer_size = 100000
     self.batch_size = 32
     self.rb = ReplayBuffer(self.batch_size, self.buffer_size)
 
     self.qnet = QNet(self.action_size)
     self.qnet_target = QNet(self.action_size)
-    self.optimizer = SDG(lr=0.01)
+    self.optimizer = SDG(lr=0.0005)
     self.optimizer.setup(self.qnet)
 
   def get_action(self, state) :
@@ -45,6 +45,7 @@ class DQNAgent :
       return action_value.data.argmax()
 
   def sync_qnet(self) :
+    # 相当于每过一段时间就设置一个目标，后面往这个目标收敛，然后再找下一个目标
     self.qnet_target = copy.deepcopy(self.qnet)
 
   def update(self, state, action, reward, next_state, done) :
@@ -53,14 +54,14 @@ class DQNAgent :
       return
 
     states, actions, rewards, next_states, dones = self.rb.get_batch()
+
     next_qs = self.qnet_target(next_states)
+    next_qs.unchain()
     next_qs = next_qs.data.max(axis=1)
     targets = rewards + (1 - done) * self.gamma * next_qs
 
     qs = self.qnet(states)
     qs = qs[np.arange(self.batch_size), actions]
-    qs.unchain()
-
     loss = mean_square_error(qs, targets)
 
     self.qnet.cleargrad()
@@ -81,7 +82,7 @@ for i in range(1000) :
     action = agent.get_action(state)
     next_state, reward, done, truncated, info = env.step(action)
     agent.update(state, action, reward, next_state, done)
-    next_state = state
+    state = next_state
 
     total_reward += reward
   reward_history.append(total_reward)
