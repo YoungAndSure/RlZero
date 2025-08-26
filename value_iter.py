@@ -15,6 +15,8 @@ def value_iter_onestep(env, V, gamma) :
       v = r + gamma * V[next_state]
       action_values.append(v)
     
+    # Policy Update && Value Update
+    # 算法里是两步，这里二合一了
     V[state] = max(action_values)
   return V
 

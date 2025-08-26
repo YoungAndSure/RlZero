@@ -32,7 +32,9 @@ def policy_iter(env, gamma, is_render=False) :
   pi = defaultdict(lambda : {0:0.25, 1:0.25, 2:0.25, 3:0.25})
 
   for i in range(1000) :
+    # Policy Evaluate 解贝尔曼方程叫策略评估
     V = policy_evaluate(pi, V, env, gamma)
+    # Policy Improvement 策略提升
     new_pi = greedy_policy(env, V, gamma)
 
     if is_render :
