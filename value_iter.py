@@ -24,6 +24,7 @@ def value_iter(env, V, gamma, threshold=0.001) :
     V = value_iter_onestep(env, V, gamma)
 
     max_delta = None
+    # 读MFRL才理解，这里其实是压缩映射公式里的max范数
     for state, value in V.items() :
       delta = abs(value - old_V[state])
       if max_delta is None or delta > max_delta :

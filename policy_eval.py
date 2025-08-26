@@ -21,6 +21,7 @@ def eval_one_step(pi, V, env, gamma) :
 
   return V
 
+# 通过迭代法找当前策略下贝尔曼方程的解
 def policy_evaluate(pi, V, env, gamma, threshold=0.001) :
   for i in range(1000) :
     old_V = V.copy()

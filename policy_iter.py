@@ -24,6 +24,7 @@ def greedy_policy(env, V, gamma) :
 
   return new_pi
 
+# 策略迭代法
 def policy_iter(env, gamma, is_render=False) :
   gamma = 0.9
   env = GridWorld()
